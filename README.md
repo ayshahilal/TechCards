@@ -1,6 +1,7 @@
 # TechCards
 This is the final project of CS50W course of Harvard. 
 
+* The youtube link: https://youtu.be/T4w0-Ttudvo
 
 # Requirements
 The final project is your opportunity to design and implement a dynamic website of your own. So long as your final project draws upon this course’s lessons, the nature of your website will be entirely up to you, albeit subject to the staff’s approval.
