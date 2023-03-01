@@ -1,0 +1,124 @@
+{% extends "final/layout.html" %}
+
+{% block body %}
+
+<div>
+    <div style="padding-top: 20px;"> 
+    
+        {% if solved_cards_only and cards %}
+            <h3 style="text-align: center;">Studied TechCards</h3>
+        {% endif %}
+            
+        {% if user.is_authenticated %}
+            {% if noCards %}
+            <div class="whybutton" style="margin: 180px;">
+                <a class="btn" style="text-align:center; color:white; font-size: 25px;" href="{% url 'new_card' user_id=user.id %}">There is no cards. Click to create flashcards!</a>
+            </div>
+            {% endif %}
+            {% if solved_cards_only and not cards %}
+            <div  class="whybutton" style="margin: 180px;">
+                <a class="btn" style="text-align:center; color:white; font-size: 25px;" href="{% url 'mixed_flashcards' %}">Start studying with TechCards now!</a>
+            </div>
+            {% elif not cards and not solved_cards_only and not user_cards_only %}
+            <div class="col" style="text-align: center;">
+                <h4 style="padding-top: 80px; color:rgb(20, 66, 126);"> Congratulations! You solved all the cards in this topic: {{topic_name}}</h4>
+                <a style="margin: 50px 50px;" href="{% url 'solved_cards'%}" class="link" style="background-color: #cc8743;">See solved cards</a>
+            </div>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="container" style="text-align: center;">
+        {%  if not user_cards_only and not solved_cards_only %}
+        <nav class="nav nav-pills nav-justified"  style="text-align: center;">
+            {% for topic in topics %}   
+                <a href="{% url 'topic' id=topic.id %}" class="link">{{topic}}</a>
+            {% endfor %}
+        </nav>
+       
+        {% endif %}
+    </div>
+
+    <div class="container-xxl" style= "padding-top:10px; padding-bottom:20px;">
+        
+        <div class="row">
+            
+            {% for card in cards %} 
+           
+                <div class="flashcard" id="flash_card_{{card.id}}" style="display:block;">
+                    
+                    <div class="front" onclick="flipCard(this.parentElement)">
+                        <div class="flashcard-header">
+                            <p>{{card.topic}}</p>
+                        </div>
+                        <div class="flashcard-body">
+                            <p>{{ card.front_side }}</p>
+                        </div>
+                        {% if user.is_authenticated %}
+                            {% if user_cards_only %}
+                                <div class="flashcard-footer">
+                                    <form action="{% url 'edit_card_page' card.id %}" method="POST" id="edit_option_{{ card.id }}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-warning">Edit</button>
+                                    </form>
+                                    <button id="delete_option_{{ card.id }}" style="margin-top: 7px;" type="submit" name="score" class="btn btn-danger" onclick="open_delete_option(event, '{{card.id}}')">Delete</button>
+                                </div>
+                                <div class="delete" id="delete_card_{{ card.id }}" style="display:none;">
+                                    <form action="{% url 'delete_card' card.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <p style="color:white";> Are you sure you want to delete this card?</p>
+                                        <button class="btn btn-danger">Yes, I'm sure.</button>
+                                    </form>
+                                    <button class="btn btn-outline-secondary" onclick="close_delete_form(event, '{{card.id}}')">No</button>
+                                </div>
+                            {% endif %}
+                            {% if solved_cards_only %}
+                                <div class="flashcard-footer" style="padding-top: 10px;">
+                                    
+                                    <button type="submit" name="not_solved" class="btn btn-danger" onclick="set_not_solved(event, `{{card.id}}`)">Set as not solved</button>
+
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div> 
+                    <div class="back" onclick="flipBack(this.parentElement)">
+                        
+                        <div class="flashcard-header">
+                            <p><strong>Answer:</strong></p>
+                        </div>
+                        <div class="flashcard-body">
+                            <p>{{ card.back_side }}</p>
+                        </div>
+                        {% if user.is_authenticated %}
+                            {% if not user_cards_only and not solved_cards_only %}
+                                <div style="bottom: 0;">
+                                    <button style="margin-top: 7px;" type="submit" name="score" class="btn btn-success" onclick="save_score(event, `{{card.id}}`,5, `{{mixed}}`)" >Easy</button>
+                                    <button style="margin-top: 7px;" type="submit" name="score" class="btn btn-warning" onclick="save_score(event, `{{card.id}}`,3, `{{mixed}}`)">Med</button>
+                                    <button style="margin-top: 7px;" type="submit" name="score" class="btn btn-danger" onclick="save_score(event, `{{card.id}}`,1, `{{mixed}}`)">Hard</button>
+                                </div> 
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% if user.is_authenticated and not user_cards_only and not solved_cards_only and cards%}
+            <h3><span id="show_progress" class="badge bg-warning">{{solved_cards_count}}/{{all_cards_count}}</span></h3>
+        {% endif %}
+        {% if not user.is_authenticated or solved_cards_only or user_cards_only%}
+            <div class="flashcard-pagination" style="text-align: center; padding-top: 10px;">
+                <nav aria-label="Page navigation example" id="toggle_next">
+                    <ul class="pagination justify-content-center">
+                        {% if cards.has_next %}
+                        <li class="page-item"><a id="next-page-link" class="btn btn-secondary" href="?page={{cards.next_page_number}}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        {% endif %}
+      
+  
+    </div>
+</div>
+
+
+{% endblock %}

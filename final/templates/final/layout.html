@@ -1,0 +1,66 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Final{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'final/styles.css' %}" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+        <script src="{% static 'final/card_operations.js' %}"></script> 
+    </head>
+    <body class="body">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-body-tertiary" style="background-color: #2b5888;">
+            
+            <a class="navbar-brand" href="{% url 'index' %}">TechCards</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                
+                    {% with url_name=request.resolver_match.url_name %}
+                    {% if user.is_authenticated %}
+                    <li class="nav-item{% if url_name == 'profile' %} active{% endif %}">
+                        <a class="nav-link" href="{% url 'profile' user_id=user.id %}"><strong>{{ user.username }}</strong></a>
+                    </li>
+                    <li class="nav-item{% if url_name == 'mycards' %} active{% endif %}">
+                        <a class="nav-link" href="{% url 'mycards' user_id=user.id %}">My TechCards</a>
+                    </li>
+                    <li class="nav-item{% if url_name == 'new_card' %} active{% endif %}">
+                        <a class="nav-link" href="{% url 'new_card' user_id=user.id %}">Create TechCards</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item{% if url_name == 'mixed_flashcards' %} active{% endif %}">
+                        <a class="nav-link" href="{% url 'mixed_flashcards' %}">Mixed TechCards</a>
+                    </li>
+                    {% endwith %}
+
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <div class="navscore-box">
+                    <span id="self_score" class="navscore">Score: {{user.scoreSum}}</span>
+                </div>
+                {% endif %}
+              </ul>
+            </div>
+          </nav>
+        
+        <div class="body">
+            {% block body %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

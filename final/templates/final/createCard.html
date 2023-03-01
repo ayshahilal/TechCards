@@ -1,0 +1,65 @@
+{% extends "final/layout.html" %}
+
+{% block body %}
+
+<div class="flashcardpage">
+    <div class="container-xxl" style="padding-top:30px; padding-bottom: 30px;">
+        <div style=" padding-bottom: 20px;"> 
+            <h3 style="text-align: center;">Create TechCards</h3>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="flashcard-create" id="flashcard-create" style="display:block;">
+                    <div class="front_create">
+                        {% if edit %}
+                            <form method="POST" action="{% url 'edit_flashcard' card_id=editCard.id %}">
+                        {% else %}
+                            <form method="POST" action="{% url 'create_flashcard' %}">
+                        {% endif %}
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="topic_name">Topic:</label>
+                                <select class="form-control" id="topic_name" name="topic_name" required>
+                                    {% for topic in topics %}
+                                        {% if topic == editCard.topic %}
+                                            <option value="{{ topic.id }}" selected>{{ topic.topic_name }}</option>
+                                        {% else %}
+                                            <option value="{{ topic.id }}">{{ topic.topic_name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="front_side">Front Side:</label>
+                                {% if edit %}
+                                    <textarea class="form-control" id="front_side" name="front_side" rows="3">{{ editCard.front_side }}</textarea>
+                                {% else %}
+                                    <textarea class="form-control" id="front_side" name="front_side" rows="3" required></textarea>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label for="back_side">Back Side:</label>
+                                {% if edit %}
+                                    <textarea class="form-control" id="back_side" name="back_side" rows="3">{{ editCard.back_side }}</textarea>
+                                {% else %}
+                                    <textarea class="form-control" id="back_side" name="back_side" rows="3" required></textarea>
+                                {% endif %}
+                            
+                            </div>
+                            {% if edit %}
+                                <button type="submit" class="btn btn-warning">Edit TechCard</button>
+                            {% else %}
+                                <button type="submit" class="btn btn-primary">Create TechCard</button>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}
+

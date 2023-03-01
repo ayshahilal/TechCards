@@ -1,0 +1,23 @@
+{% extends "final/layout.html" %}
+
+{% block body %}
+
+<div class="container-xxl" style="max-height:600px;"> 
+    <h2 style="padding-top: 80px; padding-bottom: 10px; color:rgb(20, 66, 126);">Grow Your Technical Skills with TechCards</h2>
+    <div class="whybutton"><a href="{% url 'why_tech_cards' %}" class="btn" style="color:white">Why TechCards?</a></div>
+    
+    <h4 style="padding-top: 20px;">Whether you're new to computer science or an experienced coder,
+    </h4>
+    <h4 style="padding-top: 10px;">there is something for you here in TechCards for interviews.</h4>    
+    <div class="topics" style="margin: 50px; text-align: center;">
+        <div class="row row-cols-3 row-cols-md-3 g-4">
+            {% for topic in topics %}   
+            <div class="link col"><a href="{% url 'topic' id=topic.id %}" class="btn" style="color:white">{{topic}}</a></div>
+            {% endfor %} 
+        </div>
+    </div>     
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "final/layout.html" %}
+
+{% block body %}
+
+<div class="topcorner">
+    <h3 style="padding-top: 50px; color:rgb(20, 66, 126);"> Welcome {{user_profile.username}}! </h3>
+    <div class="score">Your score: {{user_profile.scoreSum}}</div>
+</div>
+<div class="top container-xxl" style="height:450px;">
+    <div class="link"><a href="{% url 'mycards' user_id=request.user.id %}">View My Cards</a></div>
+    <div class="link"><a href="{% url 'solved_cards' %}">View Studied Cards</a></div>
+    <div class="link"><a href="{% url 'new_card' user_id=request.user.id %}">Create New Cards</a></div>
+
+</div>
+
+{% endblock %}
+
